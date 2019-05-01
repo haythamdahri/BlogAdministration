@@ -1,0 +1,161 @@
+<div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+  <table class="table table-dark table-hover">
+    <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Title</th>
+      <th scope="col">Creation date</th>
+      <th scope="col">Views</th>
+      <th scope="col">Cover</th>
+      <th scope="col">Creator</th>
+      <th scope="col">Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+
+    <!-- @If posts not loaded yet -->
+    <ng-container *ngIf="(postsData|async)?.posts == null">
+      <tr class="text-center">
+        <td colspan="7">
+          <img src="/assets/images/ajax-loader.gif"/>
+        </td>
+      </tr>
+    </ng-container>
+
+
+    <!-- @Async will wait until receiving data from the server  | ? is used to iterate the loop if possData exists -->
+    <tr *ngFor="let post of (postsData | async)?.posts">
+
+      <!-- Display each post individually -->
+      <th scope="row"><a [href]="SERVER_URL + '/posts/' + post.id" target="_blank">
+        <button type="button" class="btn btn-light"><i class="fas fa-eye"></i>Visit</button>
+      </a></th>
+      <td>{{post.title}}</td>
+      <td>{{post.creationDate | date:'EEEE dd MMMM yyyy HH:mm:ss'}}</td>
+      <td>{{post.views}}</td>
+      <td>
+        <img [src]="MEDIA_URL + '/posts/' + post.cover" style="width: 4rem; height: 4rem"
+             class="rounded mx-auto d-block" [alt]="post.creatorUrl">
+      </td>
+      <td>
+        <button class="btn btn-info" (click)="onCreatorDetails(post.creatorUrl)" data-toggle="modal"
+                data-target="#userModal"><i class="fas fa-info-circle"></i> Creator details
+        </button>
+      </td>
+      <td *ngIf="!post.active">
+        <button class="btn btn-danger"><i class="fas fa-check-double"></i> Approve</button>
+      </td>
+      <td *ngIf="post.active">
+        <button class="btn btn-danger"><i class="fas fa-minus-square"></i> Reject</button>
+      <td>
+
+
+    </tr>
+
+    <!-- @In case no post found -->
+    <tr *ngIf="noPosts">
+      <td colspan="8" class="alert alert-info text-center font-weight-bold">
+        <i class="fas fa-exclamation-circle"></i> No post has been found!
+      </td>
+    </tr>
+
+    </tbody>
+  </table>
+
+
+  <!-- @Pagination -->
+  <nav aria-label="Page navigation example" *ngIf="postsData != null && (postsData|async)?.page.totalPages > 1">
+    <ul class="pagination justify-content-center">
+      <li class="page-item" [ngClass]="{disabled: (postsData|async)?.page.currentPage === 0}">
+        <a class="page-link" [routerLink]="[]" [queryParams]="{'page': (postsData|async)?.page.currentPage - 1}" tabindex="-1" aria-disabled="true">Previous</a>
+      </li>
+      <li class="page-item" [ngClass]="{'active': (postsData|async)?.page.currentPage === number}" *ngFor="let number of postsPages">
+        <a class="page-link" [routerLink]="[]" [queryParams]="{'page': number}">{{number + 1}}</a>
+      </li>
+      <li class="page-item" [ngClass]="{disabled: (postsData|async)?.page.currentPage === (postsData|async)?.page.totalPages-1}">
+        <a class="page-link" [routerLink]="[]" [queryParams]="{'page': (postsData|async)?.page.currentPage + 1}">Next</a>
+      </li>
+    </ul>
+  </nav>
+
+
+</div>
+
+
+<!-- @User modal -->
+<div class="modal fade" id="userModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+
+        <!-- @If fetched user found -->
+        <h5 class="modal-title" id="exampleModalLabel" *ngIf="user">
+          <i class="far fa-user"></i> {{user.fullName }}
+        </h5>
+
+        <!-- @If fetched user not found or in loading state-->
+        <h5 class="modal-title" id="exampleModalLabel" *ngIf="!user || isUserError">
+          <i class="far fa-user"></i> USER
+        </h5>
+
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <!-- @If user found -->
+      <div class="modal-body" *ngIf="user">
+        <table class="table">
+          <thead class="thead-dark">
+          <tr>
+            <th scope="col">#</th>
+            <th>{{user.id}}</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <th scope="row">First name</th>
+            <td>{{user.firstName}}</td>
+          </tr>
+          <tr>
+            <th scope="row">Last name</th>
+            <td>{{user.lastName}}</td>
+          </tr>
+          <tr>
+            <th scope="row">Image</th>
+            <td><img [src]="MEDIA_URL + '/users/' + user.image" style="border-radius: 100%; height: 4rem; width: 4rem;"
+                     alt="{{user.fullName}}"/></td>
+          </tr>
+          <tr>
+            <th scope="row">Creation date</th>
+            <td>{{user.creationDate | date:'EEEE dd MMMM yyyy' }}</td>
+          </tr>
+          <tr>
+            <th scope="row">Active</th>
+            <td>{{user.active}}</td>
+          </tr>
+          </tbody>
+        </table>
+
+      </div>
+
+      <!-- @If looking for user and no error faced -->
+      <div class="modal-body text-center" *ngIf="!user && !isUserError">
+        <img src="/assets/images/ajax-loader.gif"/>
+      </div>
+
+      <!-- @If an error found -->
+      <div class="modal-body alert alert-danger text-center text-bold" *ngIf="isUserError">
+        <i class="fas fa-exclamation"></i> An error occurent, please try again later!
+      </div>
+
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="onUserModalClose()"><i
+          class="fas fa-window-close"></i> Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
