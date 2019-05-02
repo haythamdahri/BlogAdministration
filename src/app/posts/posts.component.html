@@ -43,10 +43,13 @@
         </button>
       </td>
       <td *ngIf="!post.active">
-        <button class="btn btn-danger"><i class="fas fa-check-double"></i> Approve</button>
+        <button (click)="onPostDecide(post.id, true)" class="btn btn-success"><i
+          class="fas fa-check-double"></i> Approve
+        </button>
       </td>
       <td *ngIf="post.active">
-        <button class="btn btn-danger"><i class="fas fa-minus-square"></i> Reject</button>
+        <button (click)="onPostDecide(post.id, false)" class="btn btn-danger"><i class="fas fa-minus-square"></i> Reject
+        </button>
       <td>
 
 
@@ -75,13 +78,17 @@
   <nav aria-label="Page navigation example" *ngIf="postsData != null && (postsData|async)?.page.totalPages > 1">
     <ul class="pagination justify-content-center">
       <li class="page-item" [ngClass]="{disabled: (postsData|async)?.page.currentPage === 0}">
-        <a class="page-link" [routerLink]="[]" [queryParams]="{'page': (postsData|async)?.page.currentPage - 1}" tabindex="-1" aria-disabled="true">Previous</a>
+        <a class="page-link" [routerLink]="[]" [queryParams]="{'page': (postsData|async)?.page.currentPage - 1}"
+           tabindex="-1" aria-disabled="true">Previous</a>
       </li>
-      <li class="page-item" [ngClass]="{'active': (postsData|async)?.page.currentPage === number}" *ngFor="let number of postsPages">
+      <li class="page-item" [ngClass]="{'active': (postsData|async)?.page.currentPage === number}"
+          *ngFor="let number of postsPages">
         <a class="page-link" [routerLink]="[]" [queryParams]="{'page': number}">{{number + 1}}</a>
       </li>
-      <li class="page-item" [ngClass]="{disabled: (postsData|async)?.page.currentPage === (postsData|async)?.page.totalPages-1}">
-        <a class="page-link" [routerLink]="[]" [queryParams]="{'page': (postsData|async)?.page.currentPage + 1}">Next</a>
+      <li class="page-item"
+          [ngClass]="{disabled: (postsData|async)?.page.currentPage === (postsData|async)?.page.totalPages-1}">
+        <a class="page-link" [routerLink]="[]"
+           [queryParams]="{'page': (postsData|async)?.page.currentPage + 1}">Next</a>
       </li>
     </ul>
   </nav>

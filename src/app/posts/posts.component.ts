@@ -1,12 +1,13 @@
 import {Component, OnInit} from '@angular/core';
 import {PostService} from '../services/post.service';
-import {Observable} from 'rxjs';
+import {Observable, Subscription} from 'rxjs';
 import {AppSettings} from '../services/app.settings';
 import {UserService} from '../services/user.service';
 import {User} from '../models/user.model';
 import {ActivatedRoute, Params, Router} from '@angular/router';
 import {Posts} from '../models/posts.interface';
 import {HttpErrorResponse} from '@angular/common/http';
+import Swal from 'sweetalert2';
 
 
 @Component({
@@ -39,7 +40,7 @@ export class PostsComponent implements OnInit {
         if (queryParams.page != null) {
           this.postsData = this.postService.getPosts(Number(queryParams.page));
         } else {
-          this.postsData = this.postService.getPosts(null, 2);
+          this.postsData = this.postService.getPosts();
         }
         this.postsData.subscribe(
           (data: Posts) => {
@@ -61,6 +62,9 @@ export class PostsComponent implements OnInit {
   }
 
 
+  /*
+  * @On creator details button click for more details about the post's creator
+  */
   onCreatorDetails(creatorUrl: URL) {
     this.userService.getUserByLink(creatorUrl).subscribe(
       (user: User) => {
@@ -73,12 +77,36 @@ export class PostsComponent implements OnInit {
     );
   }
 
+  /*
+  * @On close of creator details modal
+  */
   onUserModalClose() {
     this.user = null;
     this.isUserError = false;
   }
 
-  goToPostsPage(pageNumber: number) {
-    this.router.navigate([''], {queryParams: [{page: pageNumber}], relativeTo: this.route});
+  /*
+  * @Accept or reject a post
+  */
+  onPostDecide(postId: number, action: boolean) {
+    this.postService.decidePost(postId, action).subscribe(
+      (data: string) => {
+        Swal.fire(
+          'Post has been!' + action ? 'approved' : 'rejected',
+          data,
+          'success'
+        );
+        console.log(data);
+        this.ngOnInit();
+      },
+      (error: HttpErrorResponse) => {
+        Swal.fire(
+          'Error',
+          'An error occured, please try again',
+          'error'
+        );
+        console.log(error);
+      }
+    );
   }
 }
