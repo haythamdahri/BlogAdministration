@@ -1,0 +1,31 @@
+<div class="col-sm-8 col-md-8 col-lg-8 col-xl-8 ml-auto mr-auto">
+
+  <div class="card">
+    <div class="card-header">
+      Sign in
+    </div>
+    <div class="card-body">
+      <blockquote class="blockquote mb-0">
+
+        <form (ngSubmit)="login()" #loginForm="ngForm">
+          <div class="form-group">
+            <label for="inputEmail">Email address</label>
+            <input type="email" name="email" ngModel #email class="form-control" id="inputEmail"
+                   aria-describedby="emailHelp" placeholder="Enter email">
+          </div>
+          <div class="form-group">
+            <label for="inputPassword">Password</label>
+            <input type="password" name="password" #password="ngModel" ngModel class="form-control" id="inputPassword"
+                   placeholder="Password"
+                   pattern="[0-9]{4,9}"
+                   required=""
+                   [ngClass]="{'is-invalid': password.invalid && password.touched, 'is-valid': password.valid && password.touched}">
+          </div>
+          <button type="submit" class="btn btn-primary"><i class="fas fa-sign-in-alt"></i> Submit</button>
+        </form>
+
+      </blockquote>
+    </div>
+  </div>
+
+</div>

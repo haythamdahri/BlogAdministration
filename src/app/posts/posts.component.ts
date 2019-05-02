@@ -6,6 +6,7 @@ import {UserService} from '../services/user.service';
 import {User} from '../models/user.model';
 import {ActivatedRoute, Params, Router} from '@angular/router';
 import {Posts} from '../models/posts.interface';
+import {HttpErrorResponse} from '@angular/common/http';
 
 
 @Component({
@@ -22,6 +23,7 @@ export class PostsComponent implements OnInit {
   isUserError = false;
   postsPages = new Array();
   noPosts = false;
+  isPostsError = false;
 
   constructor(private postService: PostService,
               private userService: UserService,
@@ -33,6 +35,7 @@ export class PostsComponent implements OnInit {
     this.route.queryParams.subscribe(
       (queryParams: Params) => {
         this.noPosts = false;
+        this.isPostsError = false;
         if (queryParams.page != null) {
           this.postsData = this.postService.getPosts(Number(queryParams.page));
         } else {
@@ -47,6 +50,9 @@ export class PostsComponent implements OnInit {
             if (data.posts.length === 0) {
               this.noPosts = true;
             }
+          },
+          () => {
+            this.isPostsError = true;
           }
         );
       }
@@ -60,8 +66,9 @@ export class PostsComponent implements OnInit {
       (user: User) => {
         this.user = user;
       },
-      () => {
+      (error: HttpErrorResponse) => {
         this.isUserError = true;
+        console.log('Error=========================: ' + error);
       }
     );
   }

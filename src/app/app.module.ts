@@ -13,6 +13,9 @@ import {HttpClientModule} from '@angular/common/http';
 import {PostService} from './services/post.service';
 import {RouterModule} from '@angular/router';
 import {UserService} from './services/user.service';
+import { SigninComponent } from './auth/signin/signin.component';
+import {FormsModule} from '@angular/forms';
+import {AuthenticationService} from './services/authentcation/authentication.service';
 
 @NgModule({
   declarations: [
@@ -22,16 +25,18 @@ import {UserService} from './services/user.service';
     HeaderComponent,
     FooterComponent,
     PostsComponent,
-    PostComponent
+    PostComponent,
+    SigninComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     // Import HttpClientModule to use it to fetch data
     HttpClientModule,
-    RouterModule
+    RouterModule,
+    FormsModule
   ],
-  providers: [PostService, UserService],
+  providers: [PostService, UserService, AuthenticationService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

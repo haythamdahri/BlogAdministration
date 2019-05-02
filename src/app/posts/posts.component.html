@@ -13,8 +13,8 @@
     </thead>
     <tbody>
 
-    <!-- @If posts not loaded yet -->
-    <ng-container *ngIf="(postsData|async)?.posts == null">
+    <!-- @If posts not loaded yet and o posts error -->
+    <ng-container *ngIf="(postsData|async)?.posts == null && !isPostsError">
       <tr class="text-center">
         <td colspan="7">
           <img src="/assets/images/ajax-loader.gif"/>
@@ -52,10 +52,18 @@
 
     </tr>
 
-    <!-- @In case no post found -->
-    <tr *ngIf="noPosts">
+    <!-- @In case no post found and no posts error -->
+    <tr *ngIf="noPosts && !isPostsError">
       <td colspan="8" class="alert alert-info text-center font-weight-bold">
         <i class="fas fa-exclamation-circle"></i> No post has been found!
+      </td>
+    </tr>
+
+
+    <!-- @In case of posts error-->
+    <tr *ngIf="isPostsError">
+      <td colspan="8" class="alert alert-danger text-center font-weight-bold">
+        <i class="fas fa-exclamation-circle"></i> An error occured, please try again later!
       </td>
     </tr>
 

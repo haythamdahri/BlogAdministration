@@ -1,7 +1,7 @@
-import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
-import {Observable} from 'rxjs';
+import {HttpClient, HttpErrorResponse, HttpHeaders, HttpParams} from '@angular/common/http';
+import {Observable, throwError} from 'rxjs';
 import {Injectable} from '@angular/core';
-import {map, retry} from 'rxjs/operators';
+import {catchError, map, retry} from 'rxjs/operators';
 import {AppSettings} from './app.settings';
 import {Posts} from '../models/posts.interface';
 
@@ -32,11 +32,16 @@ export class PostService {
           });
           response.page.currentPage = response.page.number;
           return {posts: postsResponse, page: response.page};
-        }
+        },
       ),
       // Retry to retrieve data for 5 times
-      retry<any>(5)
+      retry<any>(5),
+      catchError(this.handleError)
     );
+  }
+
+  private handleError(error: HttpErrorResponse) {
+    return throwError(new Error('An error occured, please try again'));
   }
 
 }
