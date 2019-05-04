@@ -1,6 +1,6 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, Renderer2} from '@angular/core';
 import {PostService} from '../services/post.service';
-import {Observable, Subscription} from 'rxjs';
+import {Observable} from 'rxjs';
 import {AppSettings} from '../services/app.settings';
 import {UserService} from '../services/user.service';
 import {User} from '../models/user.model';
@@ -29,7 +29,8 @@ export class PostsComponent implements OnInit {
   constructor(private postService: PostService,
               private userService: UserService,
               private route: ActivatedRoute,
-              private router: Router) {
+              private router: Router,
+              private renderer: Renderer2) {
   }
 
   ngOnInit() {
@@ -88,11 +89,15 @@ export class PostsComponent implements OnInit {
   /*
   * @Accept or reject a post
   */
-  onPostDecide(postId: number, action: boolean) {
+  onPostDecide(postId: number, action: boolean, event: Event) {
+    console.log('Post id: ' + postId);
+    (<HTMLElement> event.target).innerHTML += ' <i class="fas fa-spinner fa-spin"></i>';
+    (<HTMLElement> event.target).setAttribute('disabled', 'true');
     this.postService.decidePost(postId, action).subscribe(
       (data: string) => {
+        const message = action === true ? 'approved !' : 'rejected !';
         Swal.fire(
-          'Post has been!' + action ? 'approved' : 'rejected',
+          'Post has been ' + message,
           data,
           'success'
         );

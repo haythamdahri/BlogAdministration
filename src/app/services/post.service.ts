@@ -15,7 +15,11 @@ export class PostService {
   }
 
   getPosts(page: number = 0, size: number = 5): Observable<Posts> {
-    const headerOptions: HttpHeaders = new HttpHeaders({'Content-Type': 'application/json'});
+    const headerOptions: HttpHeaders = new HttpHeaders(
+      {
+        'Content-Type': 'application/json'
+      }
+      );
     return this.http.get<any>(this.POSTS_URL,
       {
         headers: headerOptions,

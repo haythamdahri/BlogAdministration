@@ -19,13 +19,14 @@
     "@angular/platform-browser": "~7.2.0",
     "@angular/platform-browser-dynamic": "~7.2.0",
     "@angular/router": "~7.2.0",
+    "angular2-jwt": "^0.2.3",
     "core-js": "^2.5.4",
     "popper.js": "^1.15.0",
     "rxjs": "~6.3.3",
-    "sweetalert2": "^8.9.0",
+    "sweetalert2": "^8.10.0",
+    "tar": ">=4.4.2",
     "tslib": "^1.9.0",
-    "zone.js": "~0.8.26",
-    "tar": ">=4.4.2"
+    "zone.js": "~0.8.26"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.13.0",
@@ -41,7 +42,7 @@
     "jasmine-core": "~2.99.1",
     "jasmine-spec-reporter": "~4.2.1",
     "jquery": "^3.4.1",
-    "karma": "~4.0.0",
+    "karma": "^4.1.0",
     "karma-chrome-launcher": "~2.2.0",
     "karma-coverage-istanbul-reporter": "~2.0.1",
     "karma-jasmine": "~1.1.2",

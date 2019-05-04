@@ -7,21 +7,39 @@
     <div class="card-body">
       <blockquote class="blockquote mb-0">
 
-        <form (ngSubmit)="login()" #loginForm="ngForm">
+        <div class="alert alert-danger" *ngIf="loginError">
+          <strong>Bad credentials!</strong> Invalid username or password!
+        </div>
+
+
+        <form (ngSubmit)="onLogin()" #loginForm="ngForm">
           <div class="form-group">
             <label for="inputEmail">Email address</label>
-            <input type="email" name="email" ngModel #email class="form-control" id="inputEmail"
-                   aria-describedby="emailHelp" placeholder="Enter email">
+            <input type="email" name="email"
+                   [ngClass]="{'is-invalid': email.invalid && email.touched, 'is-valid': email.valid && email.touched}"
+                   ngModel #email="ngModel"
+                   class="form-control"
+                   id="inputEmail"
+                   aria-describedby="emailHelp"
+                   placeholder="Enter email"
+                   required
+                    />
+          </div>
+          <div class="invalid-feedback" *ngIf="email.invalid && email.touched">
+            Invalid password!
           </div>
           <div class="form-group">
             <label for="inputPassword">Password</label>
             <input type="password" name="password" #password="ngModel" ngModel class="form-control" id="inputPassword"
                    placeholder="Password"
-                   pattern="[0-9]{4,9}"
+                   pattern="\w+"
                    required=""
                    [ngClass]="{'is-invalid': password.invalid && password.touched, 'is-valid': password.valid && password.touched}">
           </div>
-          <button type="submit" class="btn btn-primary"><i class="fas fa-sign-in-alt"></i> Submit</button>
+          <div class="invalid-feedback" *ngIf="password.invalid && password.touched">
+            Invalid password!
+          </div>
+          <button #loginButton type="submit" [disabled]="loginForm.invalid" class="btn btn-primary"><i class="fas fa-sign-in-alt"></i> Login</button>
         </form>
 
       </blockquote>
